@@ -3,18 +3,21 @@ import path from 'path';
 import fs from 'fs';
 
 interface DataToSend {
-  name: string;
-  age: number;
+  URL: string;
+  backgroundColor: string;
+  fillColor: string;
+  logoURL?: string;
 }
 
 export const sendDataToPython = (data: DataToSend): void => {
-  const pythonScriptPath = path.resolve(__dirname, '../../PYTHON/reciever.py');
+  const pythonScriptPath = path.resolve(__dirname, '../../PYTHON/QRGen.py');
 
   if (!fs.existsSync(pythonScriptPath)) {
-    console.error('Error: reciever.py does not exist at the path:', pythonScriptPath);
+    console.error('Error: QRGen.py does not exist at the path:', pythonScriptPath);
     return;
   }
 
+  // Spawn Python process
   const pythonProcess = spawn('python', [pythonScriptPath, JSON.stringify(data)]);
 
   pythonProcess.stdout.on('data', (data: Buffer) => {
@@ -29,4 +32,6 @@ export const sendDataToPython = (data: DataToSend): void => {
     console.log(`Python process exited with code ${code}`);
   });
 };
+
+// Example usage
 
