@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 
 app.use(express.json());
-
+export default app;
 interface DataToSend {
   URL: string;
   backgroundColor: string;
