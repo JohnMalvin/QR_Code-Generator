@@ -8,8 +8,8 @@ import createHttpError from 'http-errors';
 
 interface DataToSend {
   URL: string;
-  backgroundColor: string;
-  fillColor: string;
+  backgroundColor: number[];
+  fillColor: number[]
   logoURL?: string;
 }
 interface ReturnBind {
@@ -17,7 +17,20 @@ interface ReturnBind {
   APIKEY: string;
 }
 
-export const sendDataToPython = (data: DataToSend): void => {
+function arrayToString(arr: number[]): string {
+  return `(${arr.join(', ')})`;
+}
+
+export const sendDataToPython = (datas: DataToSend): void => {
+  let data: { URL: string; backgroundColor: string; fillColor: string; logoURL?: string } = {
+    URL: datas.URL,
+    backgroundColor: arrayToString(datas.backgroundColor), 
+    fillColor: arrayToString(datas.fillColor),
+  };
+  if ("logoURL" in datas) {
+    data = { ...data, logoURL: datas.logoURL };
+  }
+  console.log(data)
   const pythonScriptPath = path.resolve(__dirname, '../../PYTHON/QRGen.py');
 
   if (!fs.existsSync(pythonScriptPath)) {
@@ -25,7 +38,6 @@ export const sendDataToPython = (data: DataToSend): void => {
     return;
   }
 
-  // Spawn Python process
   const pythonProcess = spawn('python', [pythonScriptPath, JSON.stringify(data)]);
 
   pythonProcess.stdout.on('data', (data: Buffer) => {

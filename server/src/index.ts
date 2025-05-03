@@ -60,6 +60,16 @@ app.post("create/bind", (req: Request, res: Response) => {
   
 })
 
+const data = {
+    "URL": "https://www.example.com",
+    "backgroundColor": [255, 255, 255],
+    "fillColor": [0, 0, 0],
+    "logoURL": "https://img.freepik.com/free-psd/camera-outline-logo-design_23-2151263987.jpg?t=st=1746281349~exp=1746284949~hmac=26ff5f31f9a451f8c7c56db929d0653580be7b7b22e4e453272ed4952fc0f6f8&w=900"
+}
+
+
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  sendDataToPython(data);
 });
