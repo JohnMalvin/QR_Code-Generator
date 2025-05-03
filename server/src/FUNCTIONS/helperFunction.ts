@@ -3,12 +3,18 @@ import path from 'path';
 import fs from 'fs';
 import mongoose from 'mongoose';
 import 'dotenv/config';
+import Bind from '../models/bind.model';
+import createHttpError from 'http-errors';
 
 interface DataToSend {
   URL: string;
   backgroundColor: string;
   fillColor: string;
   logoURL?: string;
+}
+interface ReturnBind {
+  API: string;
+  APIKEY: string;
 }
 
 export const sendDataToPython = (data: DataToSend): void => {
@@ -33,6 +39,10 @@ export const sendDataToPython = (data: DataToSend): void => {
   pythonProcess.on('close', (code) => {
     console.log(`Python process exited with code ${code}`);
   });
+
+  pythonProcess.on('error', (err) => {
+    console.error(`Failed to start Python process: ${err.message}`);
+  });
 };
 
 
@@ -50,8 +60,53 @@ export const connectDB = async () => {
   }
 };
 
+const apiGenerator = (): string => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < 12; i++) {
+    if (i % 4 === 0 && i !== 0) result += "-";
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+const apiKeyGenerator = (): string => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*:?|+_=()/`~1234567890';
+  let result = '';
+  for (let i = 0; i < 14; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
 
+export const handleCreateNewBind = async (): Promise<ReturnBind | null> => {
+  try {
+    const API = apiGenerator();
+    const APIKEY = apiKeyGenerator();
+    const bindSchema = await Bind.create({ API, APIKEY });
+    return { API, APIKEY };
+  } catch (error) {
+    console.error('Error creating bind:', error);
+    return null;
+  }
+};
 
 export const apiValidator = async (API: string, APIKEY: string): Promise<Boolean> => {
-  return true;
-}
+  const bind = await Bind.findOne({ API });
+  if (!bind) {
+    console.log(`API ${API} not found.`);
+    return false;
+  }
+  if (bind.APIKEY === APIKEY) return true;
+  console.log(`APIKEY mismatch for API ${API}`);
+  return false;
+};
+
+export const isValidDataToSend = (data: any): data is DataToSend => {
+  return (
+    typeof data === 'object' &&
+    typeof data.URL === 'string' &&
+    typeof data.backgroundColor === 'string' &&
+    typeof data.fillColor === 'string' &&
+    (data.logoURL === undefined || typeof data.logoURL === 'string')
+  );
+};
