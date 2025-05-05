@@ -59,6 +59,6 @@ body {
   z-index: -2;
   position: absolute;
   pointer-events: none;
-  opacity: 0.2;
+  opacity: 0.4;
   background-color: rgb(255, 0, 120);
 }
