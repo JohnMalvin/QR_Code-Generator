@@ -1,0 +1,117 @@
+.dashboard-dashboard {
+    width: 80%;
+    /* height: 500px; */
+    aspect-ratio: 6 / 3;
+    border: 3px solid var(--white);
+    border-radius: 10px;
+    margin: auto;
+    max-width: 1400px;
+    box-shadow: var(--gradient-shadow);
+    display: flex;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.dashboard-right {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    height: max-content;
+    width: 45%;
+}
+
+.gradient-button {
+    font-weight: 900;
+    font-size: 20px;
+    color: var(--white);
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--drop-shadow);
+}
+.gradient-button:hover {
+    transform: scale(0.8);
+    border: 2px solid var(--white);
+    box-shadow: var(--inner-shadow);
+}
+.gradient-button p {
+    display: block;
+    line-height: 0;
+}
+.gradient-button img {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+}
+.barcode {
+    margin-top: 10px;
+    width: 100%;
+    flex: 1;
+    aspect-ratio: 1 / 1;
+    
+    border-radius: 5px;
+    box-shadow: var(--drop-shadow);
+}
+#download-button {
+    display: none;
+}
+
+.dashboard-left {
+    flex: 1;
+    border: 2px solid var(--white);
+    margin-right: 10px;
+    overflow-y: scroll;
+    border-radius: 5px;
+    padding: 25px;
+    box-sizing: border-box;
+    position: relative;
+}
+.form-component {
+    /* border: 2px solid red; */
+    height: max-content;
+    /* margin-bottom: 15px; */
+    display: flex;
+    flex-direction: column;
+}
+.form-label {
+    display: block;
+    font-size: 15px;
+}
+#url-input {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 0;
+    border-radius: 2px;
+    font-size: 17px;
+    padding-left: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 100;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    outline: 0;
+}
+.form-hr {
+    /* background-color: rgba(255, 255, 255, 0.4); */
+    box-shadow: var(--drop-shadow);
+    height: 1px;
+    width: 80%;
+    margin: 10px auto 5px;
+}
+.pickr-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.pcr-app {
+  position: static !important;
+  width: 100% !important;
+  box-shadow: none !important;
+  margin-top: 8px;
+}

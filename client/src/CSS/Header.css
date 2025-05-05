@@ -3,6 +3,8 @@
 	width: 100%;
 	max-width: 1080px;
 	margin: auto;
+	margin-bottom: 20px;
+	padding-top: 20px;
 }
 
 .header-top {
@@ -45,15 +47,12 @@
 .identicator-content-active {
   	transform: scale(1.2);
   	font-weight: 700;
-  	background-image: var(--gradient-reversed);
-  	background-clip: text;
-  	-webkit-background-clip: text;
-  	-webkit-text-fill-color: transparent;
+	color: var(--white);
 }
 
 .header-bottom-wrapper {
   	position: relative;
-  	height: 0px;
+  	height: 5px;
   	width: 100%;
 }
 

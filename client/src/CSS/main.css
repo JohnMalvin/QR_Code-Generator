@@ -4,17 +4,22 @@ body {
     background-color: var(--base-color-700);
     color: var(--white);
     font-family: var(--poppins);
+    background: url(../assets/Background.jpg) no-repeat center center/cover;
+    background-size: cover;
+    background-position:left;
+    background-attachment: fixed;
 }
 :root {
     --poppins: "Poppins", sans-serif;
 
-    --gradient: linear-gradient(45deg, rgb(255, 0, 120), rgb(125, 0, 255));
-    --gradient-reversed: linear-gradient(-60deg, rgb(255, 0, 120), rgb(125, 0, 255));
+    --gradient: linear-gradient(45deg, #FF007D, #41A5FF);
+    --gradient-opacity: linear-gradient(45deg, rgba(255, 0, 120, 0.2), rgba(125, 0, 255, 0.2) 120%);
+    --gradient-reversed: linear-gradient(-60deg, #FF007D, #41A5FF);
     --gradient-fade: linear-gradient(
         90deg,
         rgba(30, 30, 30, 0) 20%,
-        rgb(125, 0, 255) 45%,
-        rgba(255, 0, 120) 55%,
+        #FF007D 45%,
+        #41A5FF 55%,
         rgba(30, 30, 30, 0) 80%
     );
 
@@ -24,9 +29,28 @@ body {
     --white-opacity: rgba(255, 255, 255, 0.4);
 
     --pink: #ff0078;
-    --purple: #7d00ff;
-    --cyan: #00ffff2c;
+    --blue: #41A5FF;
+    --cyan: #00ffff;
     
+    --pink-opacity: #ff00776a;
+    --blue-opacity: #41a6ff8d;
+    --gradient-shadow: 
+        inset 3px 3px 5px var(--blue-opacity),
+        inset -3px -3px 10px var(--pink-opacity),
+        3px 3px 5px var(--pink-opacity),
+        -3px -3px 5px var(--blue-opacity)
+    ;
+    --gradient-shadow-surrounding: 
+        3px 3px 5px var(--pink-opacity),
+        -3px -3px 5px var(--blue-opacity)
+    ;
+
+    --drop-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
+    --drop-shadow-mild: 5px 5px 10px rgba(0, 0, 0, 0.1);
+    --inner-shadow: 
+        inset 5px 0px 7px rgba(0, 0,0, 0.2),
+        inset -5px 0px 7px rgba(0, 0,0, 0.2)
+    ;
 }
 
 
@@ -37,7 +61,4 @@ body {
   pointer-events: none;
   opacity: 0.2;
   background-color: rgb(255, 0, 120);
-}
-.particle-wrapper {
-    /* display: none; */
 }
