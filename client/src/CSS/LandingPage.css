@@ -1,0 +1,84 @@
+.landing-landing {
+    padding-top: 10dvh;
+    box-sizing: border-box;
+    height: 85dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.landing-container {
+    width: 90vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    /* background-color: aqua; */
+}
+.welcome {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    height: max-content;
+}
+.welcome-hr {
+    flex: 1;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+#welcome {
+    font-size: 1vw;
+    font-weight: 400;
+}
+.landing-container p {
+    line-height: 0;
+    font-size: 2vw;
+    font-weight: 200;
+    text-align: center;
+    background-color: antiquewhite;
+    color: rgba(255, 255, 255, 0.5);
+}
+.qr-gen img {
+    width: 100%;
+    max-width: 1000px;
+}
+.qr-gen {
+    margin: 0 auto;
+    height: max-content;
+    width: 100%;
+}
+.spacing-bottom,
+.landing-mid-content {
+    min-height: 33%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 80%;
+}
+.wrapper-mid-content {
+    height: max-content;
+    width: 100%;
+}
+.spacing-top,
+.spacing-bottom {
+    flex: 1;
+}
+.spacing-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.spacing-bottom button {
+    padding: 3px 10px;
+    max-width: 160px;
+}
+#content-text {
+    font-size: 0.8vw;
+    color: var(--white);
+}

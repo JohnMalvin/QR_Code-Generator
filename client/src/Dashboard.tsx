@@ -52,7 +52,7 @@ function Dashboard() {
         overflow.scrollTo({ top: overflow.scrollHeight, behavior: 'smooth' });
     }
     return (
-        <>
+        <div className="dashboard-wrapper">
             <div className="dashboard-dashboard">
                 <div className="dashboard-left">
                     <div className="url-component form-component">
@@ -113,7 +113,7 @@ function Dashboard() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
