@@ -4,7 +4,7 @@ import GENERATE from "./assets/GENERATE.png"
 import UPLOAD from "./assets/upload.png"
 import DOWNLOAD from "./assets/DOWNLOAD.png"
 import barcodeFill from "./assets/BarcodeFill.png"
-import barcodeLogo from "./assets/BarcodeLogo.png"
+import barcodeLogo from "./assets/BarcodeLogo.jpg"
 import ColorPicker from "./ColorPicker";
 function Dashboard() {
     const uploadLogo = () => {
@@ -52,12 +52,12 @@ function Dashboard() {
         overflow.scrollTo({ top: overflow.scrollHeight, behavior: 'smooth' });
     }
     return (
-        <div className="dashboard-wrapper">
+        <div className="dashboard-wrapper" id="dashboard">
             <div className="dashboard-dashboard">
                 <div className="dashboard-left">
                     <div className="url-component form-component">
                         <label className="form-label">URL :</label>
-                        <input id="url-input" type="text" autoComplete="off"></input>
+                        <input id="url-input" type="text" autoComplete="off" placeholder="htpps://www.example.com"></input>
                     </div>
                     <div className="form-hr"></div>
                     <div className="background-component form-component">

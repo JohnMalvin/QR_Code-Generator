@@ -1,8 +1,9 @@
 import "./CSS/LandingPage.css"
 import QRGEN from "./assets/QRGEN.svg"
-import ARROW from "./assets/GENERATE.png"
+import ARROW from "./assets/ARROW.png"
 
 function LandingPage() {
+
     return (
         <div className="landing-landing">
             <div className="landing-container">
@@ -24,7 +25,17 @@ function LandingPage() {
                     </div>
                 </div>
                 <div className="spacing-bottom">
-                    <button id="generate-button" className="gradient-button">
+                    <button
+                        id="generate-button"
+                        className="gradient-button"
+                        onClick={() => {
+                            const dashboard = document.getElementById("dashboard");
+                            if (!dashboard) return;
+                            dashboard.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start",
+                            });
+                        }}>
                         <div>TRYNOW</div>
                         <img src={ARROW}></img>
                     </button>

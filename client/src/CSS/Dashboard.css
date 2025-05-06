@@ -87,6 +87,9 @@
     display: block;
     font-size: 10px;
 }
+#url-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
 #url-input {
     flex: 1;
     background-color: rgba(255, 255, 255, 0.4);

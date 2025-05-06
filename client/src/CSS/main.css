@@ -9,7 +9,13 @@ body {
     background-position:left;
     background-attachment: fixed;
 }
+*, html {
+    scroll-behavior: smooth !important;
+}
 :root {
+    pointer-events: none;
+    scroll-behavior: smooth;
+    
     --poppins: "Poppins", sans-serif;
 
     --gradient: linear-gradient(45deg, #FF007D, #41A5FF);
@@ -62,3 +68,11 @@ body {
   opacity: 0.4;
   background-color: rgb(255, 0, 120);
 }
+
+.header-text-content-container p,
+.gradient-button,
+input,
+.dashboard-left
+{
+    pointer-events: auto;
+ }

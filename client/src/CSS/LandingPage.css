@@ -6,7 +6,9 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
+    pointer-events: none;
 }
+
 .landing-container {
     width: 90vw;
     display: flex;
@@ -75,7 +77,7 @@
     justify-content: center;
 }
 .spacing-bottom button {
-    padding: 3px 10px;
+    padding: 5px 10px;
     max-width: 160px;
 }
 #content-text {
