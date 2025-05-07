@@ -1,26 +1,30 @@
 import { useState } from 'react';
 import { SketchPicker } from 'react-color';
 
-const ColorPicker = () => {
-  const [color, setColor] = useState("#fff"); // Initial color
+interface ColorPickerProps {
+  color?: string;
+  onColorChange: (color: string) => void;
+}
+const ColorPicker: React.FC<ColorPickerProps> = ({ color, onColorChange }) => {
+  const [selectedColor, setSelectedColor] = useState(color || "#fff");
 
-  // Handle color change
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChangeComplete = (color: any) => {
-    setColor(color.hex); // Update the state with selected color
+    const newColor = color.hex;
+    setSelectedColor(newColor);
+    onColorChange(newColor); // Pass the new color to the parent component
   };
 
   return (
     <div>
       <SketchPicker
-        color={color} // Set the initial color
-        onChangeComplete={handleChangeComplete} // Update on color change
-        disableAlpha={true} // Show or hide the alpha slider
-        presetColors={[]} // Color presets
-        // triangle="top-left" // Position of the triangle selector
-        width="300px" // Set custom width
+        color={selectedColor}
+        onChangeComplete={handleChangeComplete}
+        disableAlpha={true}
+        presetColors={[]}
+        // width="300px"
       />
-      <p>Selected color: {color}</p>
+      <p>Selected color: {selectedColor}</p>
     </div>
   );
 };

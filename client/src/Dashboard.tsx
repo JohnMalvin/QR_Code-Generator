@@ -6,18 +6,65 @@ import DOWNLOAD from "./assets/DOWNLOAD.png"
 import barcodeFill from "./assets/BarcodeFill.png"
 import barcodeLogo from "./assets/BarcodeLogo.jpg"
 import ColorPicker from "./ColorPicker";
+import { useEffect, useState } from "react"
+import { hexToRgb, isValidUrl } from "./CLIENT_HELPER";
+
 function Dashboard() {
-    const uploadLogo = () => {
-        const realUpload = document.querySelector("#real-upload") as HTMLInputElement;
-        if (!realUpload) return;
-        realUpload.click();
-        realUpload.addEventListener("change", () => {
-        const file = realUpload.files ? realUpload.files[0] : null;
-        if (file) {
-            alert(`Selected file: ${file.name}`);
+    const [backgroundColor, setBackgroundColor] = useState("#fff");
+    const [fillColor, setFillColor] = useState("#000");
+    const [includeLogo, setIncludeLogo] = useState(false);
+    const [logoFile, setLogoFile] = useState<File | null>(null);
+
+    const submitData = () => { 
+        const urlInput = document.querySelector("#url-input") as HTMLInputElement;
+        if (!urlInput) return;
+        const url = urlInput.value;
+        if (url === "") {
+            alert("Please enter a URL");
+            return;
+        }   
+        const isValid = isValidUrl(url);
+        if (!isValid) {
+            alert("Please enter a valid URL");
+            return;
         }
-        })
+
+        let data;
+        if (includeLogo) {
+            data = {
+                URL: url,
+                backgroundColor: hexToRgb(backgroundColor),
+                fillColor: hexToRgb(fillColor),
+                logoURL: logoFile
+            }
+        } else {
+            data = {
+
+                URL: url,
+                backgroundColor: hexToRgb(backgroundColor),
+                fillColor: hexToRgb(fillColor)
+            }
+        }
+        console.log("Data to send:", data);
     }
+    useEffect(() => { 
+        console.log("Background color:", backgroundColor);
+        console.log("Fill color:", fillColor);
+    }, [fillColor, backgroundColor]);
+
+    const handleBackgroundColorChange = (newColor: string) => {
+        setBackgroundColor(newColor);
+    };
+
+    const handleFillColorChange = (newColor: string) => {
+        setFillColor(newColor);
+    };
+    const uploadLogo = () => {
+    const realUpload = document.querySelector("#real-upload") as HTMLInputElement;
+    if (realUpload) {
+        realUpload.click();
+    }
+    };
 
     const showLogoUI = () => {
         const logoCanvas = document.querySelector(".preview-logo") as HTMLDivElement;
@@ -44,8 +91,10 @@ function Dashboard() {
     const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
             showLogoUI();
+            setIncludeLogo(true);
         } else {
             hideLogoUI();
+            setIncludeLogo(false);
         }
         const overflow = document.querySelector(".dashboard-left") as HTMLDivElement;
         if (!overflow) return;
@@ -62,12 +111,16 @@ function Dashboard() {
                     <div className="form-hr"></div>
                     <div className="background-component form-component">
                         <label className="form-label">Background Color :</label>
-                        <ColorPicker />
+                        <ColorPicker
+                           color={backgroundColor} onColorChange={handleBackgroundColorChange}
+                        />
                     </div>
                     <div className="form-hr"></div>
                     <div className="fill-component form-component">
                         <label className="form-label">Fill Color :</label>
-                        <ColorPicker />
+                        <ColorPicker
+                            color={fillColor} onColorChange={handleFillColorChange}
+                        />
                     </div>
                     <div className="url-component form-component">
                         <div className="form-label logo-label">
@@ -79,9 +132,30 @@ function Dashboard() {
                         </div>
                         <div className="form-hr logo-hr"></div>
                         <div className="preview-logo">
-                            <img src={barcodeLogo}></img>
+                            <img className="logo-here" src={barcodeLogo}></img>
                         </div>
-                        <input type="file" id="real-upload"></input>
+                        <input
+                            type="file"
+                            id="real-upload"
+                            accept="image/*"
+                            style={{ display: "none" }}
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    setLogoFile(file);
+                                    const logoImage = document.querySelector(".logo-here") as HTMLImageElement;
+                                    const reader = new FileReader();
+                                    reader.onload = (event) => {
+                                        if (logoImage && event.target) {
+                                            logoImage.src = event.target.result as string;
+                                            logoImage.style.display = "block";
+                                        }
+                                    };
+                                    reader.readAsDataURL(file);
+                                    alert(`Selected file: ${file.name}`);
+                                }
+                            }}
+                        />
                         <button id="upload-logo" className="gradient-button" onClick={uploadLogo}>
                             <p>UPLOAD LOGO</p>
                             <img src={UPLOAD}></img>
@@ -91,7 +165,7 @@ function Dashboard() {
                 </div>
                 <div className="dashboard-right">
                     <div className="button-wrapper">
-                        <button id="generate-button" className="gradient-button">
+                        <button onClick={submitData} id="generate-button" className="gradient-button">
                             <p>GENERATE</p>
                             <img src={GENERATE}></img>
                         </button>

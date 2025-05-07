@@ -75,6 +75,7 @@
     position: relative;
     box-shadow: var(--drop-shadow);
     backdrop-filter: blur(2px);
+    overflow-x: hidden !important;
 }
 .form-component {
     /* border: 2px solid red; */
@@ -179,6 +180,13 @@
     margin: auto;
     margin-bottom: 10px;
     animation: popup 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10%;
+}
+.logo-here {
+    width: 100%;
 }
 @keyframes popup {
     0% {
