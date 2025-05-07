@@ -1,7 +1,7 @@
 import "./CSS/Dashboard.css"
 // import icon from "./assets/react.svg"
 import GENERATE from "./assets/GENERATE.png"
-import UPLOAD from "./assets/upload.png"
+import UPLOAD from "./assets/UPLOAD.png"
 import DOWNLOAD from "./assets/DOWNLOAD.png"
 import barcodeFill from "./assets/BarcodeFill.png"
 import barcodeLogo from "./assets/BarcodeLogo.jpg"
