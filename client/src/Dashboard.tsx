@@ -8,12 +8,16 @@ import barcodeLogo from "./assets/BarcodeLogo.png"
 import ColorPicker from "./ColorPicker";
 import { useEffect, useState } from "react"
 import { hexToRgb, isValidUrl } from "./CLIENT_HELPER";
+import axios from "axios";
 
 function Dashboard() {
+    const API = "API";
+    const APIKEY = "YOUR_API_KEY_HERE";
+    const SERVER_URL = "http://localhost:3000"
     const [backgroundColor, setBackgroundColor] = useState("#fff");
     const [fillColor, setFillColor] = useState("#000");
     const [includeLogo, setIncludeLogo] = useState(false);
-    const [logoFile, setLogoFile] = useState<File | null>(barcodeLogo as unknown as File); // Initialize with a default logo
+    const [logoFile, setLogoFile] = useState<File | null>(barcodeLogo as unknown as File);
 
     useEffect(() => {
         const fillElement = document.querySelector(".barcode-svg") as HTMLOrSVGScriptElement; // Select the SVG itself
@@ -31,7 +35,7 @@ function Dashboard() {
         console.log("Background color changed:", backgroundColor);
     }, [backgroundColor]);
 
-    const submitData = () => { 
+    const submitData = () => {
         const urlInput = document.querySelector("#url-input") as HTMLInputElement;
         if (!urlInput) return;
         const url = urlInput.value;
@@ -45,24 +49,32 @@ function Dashboard() {
             return;
         }
 
-        let data;
-        if (includeLogo) {
-            data = {
-                URL: url,
-                backgroundColor: hexToRgb(backgroundColor),
-                fillColor: hexToRgb(fillColor),
-                logoURL: logoFile
-            }
-        } else {
-            data = {
+        const formData = new FormData();
+        formData.append("URL", url);
+        formData.append("backgroundColor", JSON.stringify(hexToRgb(backgroundColor)));
+        formData.append("fillColor", JSON.stringify(hexToRgb(fillColor)));
 
-                URL: url,
-                backgroundColor: hexToRgb(backgroundColor),
-                fillColor: hexToRgb(fillColor)
-            }
+        if (includeLogo && logoFile) {
+            formData.append("logoFile", logoFile);
         }
-        console.log("Data to send:", data);
+
+        console.log("Data to send:", formData);
+        sendData(formData);
     }
+
+    const sendData = async (formData: FormData) => {
+        alert("Generating QR code...");
+        try {
+            const response = await axios.post(`${SERVER_URL}/generate/QRCode/${API}/${APIKEY}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+            console.log("Response from server:", response.data);
+        } catch (error) {
+            console.error("Error sending data:", error);
+        }
+    };
     useEffect(() => { 
         console.log("Background color:", backgroundColor);
         console.log("Fill color:", fillColor);

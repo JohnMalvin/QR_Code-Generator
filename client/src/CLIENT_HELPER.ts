@@ -32,7 +32,8 @@ export const hexToRgb = (hex: string): [number, number, number] => {
   try {
     new URL(url);
     return true;
-  } catch (_) {
+  } catch  (error) {
+	console.error("Invalid URL:", error);
     return false;
   }
 };

@@ -9,8 +9,8 @@ import createHttpError from 'http-errors';
 interface DataToSend {
   URL: string;
   backgroundColor: number[];
-  fillColor: number[]
-  logoURL?: string;
+  fillColor: number[];
+  logoFile?: Buffer;
 }
 interface ReturnBind {
   API: string;
@@ -22,38 +22,59 @@ function arrayToString(arr: number[]): string {
 }
 
 export const sendDataToPython = (datas: DataToSend): void => {
-  let data: { URL: string; backgroundColor: string; fillColor: string; logoURL?: string } = {
+  console.log("function called");
+
+  // Create the data object, converting arrays to strings and Buffer to base64
+  let data: { URL: string; backgroundColor: string; fillColor: string; logoFile?: string } = {
     URL: datas.URL,
-    backgroundColor: arrayToString(datas.backgroundColor), 
+    backgroundColor: arrayToString(datas.backgroundColor),
     fillColor: arrayToString(datas.fillColor),
   };
-  if ("logoURL" in datas) {
-    data = { ...data, logoURL: datas.logoURL };
+
+  if (datas.logoFile) {
+    // Convert the logo file buffer to a base64 string
+    data = { ...data, logoFile: datas.logoFile.toString('base64') };
   }
-  console.log(data)
+
+  console.log("Data being sent to Python");
+
+  // Get the Python script path
   const pythonScriptPath = path.resolve(__dirname, '../../PYTHON/QRGen.py');
 
+  // Check if the script exists
   if (!fs.existsSync(pythonScriptPath)) {
     console.error('Error: QRGen.py does not exist at the path:', pythonScriptPath);
-    return;
+    throw createHttpError(404, "QRGen.py script not found.");
   }
 
+  // Spawn the Python process to run the script
   const pythonProcess = spawn('python', [pythonScriptPath, JSON.stringify(data)]);
 
+  // Listen for standard output from Python
   pythonProcess.stdout.on('data', (data: Buffer) => {
     console.log(`Python says: ${data.toString()}`);
   });
 
+  // Listen for error output from Python
   pythonProcess.stderr.on('data', (data: Buffer) => {
     console.error(`Error: ${data.toString()}`);
+    throw new Error(`Python process error: ${data.toString()}`);
   });
 
+  // Listen for the process close event
   pythonProcess.on('close', (code) => {
-    console.log(`Python process exited with code ${code}`);
+    if (code !== 0) {
+      console.error(`Python process exited with code ${code}`);
+      throw new Error(`Python process exited with non-zero code: ${code}`);
+    } else {
+      console.log('Python process finished successfully');
+    }
   });
 
+  // Handle errors starting the Python process
   pythonProcess.on('error', (err) => {
     console.error(`Failed to start Python process: ${err.message}`);
+    throw new Error(`Failed to start Python process: ${err.message}`);
   });
 };
 

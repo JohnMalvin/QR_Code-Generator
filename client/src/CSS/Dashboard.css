@@ -136,12 +136,13 @@
     background-color: var(--white);
     width: 20%;
     height: 20%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 .barcode-logo {
-    width: 100%;
+    margin-left: 15%;
+    width: 100% !important;
 }
 .logo-label {
     line-height: 0;
