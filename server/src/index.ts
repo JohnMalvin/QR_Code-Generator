@@ -62,9 +62,9 @@ app.post("create/bind", (req: Request, res: Response) => {
 
 const data = {
     "URL": "https://www.example.com",
-    "backgroundColor": [255, 255, 255],
-    "fillColor": [0, 0, 0],
-    "logoURL": "https://img.freepik.com/free-psd/camera-outline-logo-design_23-2151263987.jpg?t=st=1746281349~exp=1746284949~hmac=26ff5f31f9a451f8c7c56db929d0653580be7b7b22e4e453272ed4952fc0f6f8&w=900"
+    "backgroundColor": [0, 255, 255],
+    "fillColor": [0, 255, 0],
+    "logoURL": "https://static.vecteezy.com/system/resources/previews/023/654/784/non_2x/golden-logo-template-free-png.png"
 }
 
 

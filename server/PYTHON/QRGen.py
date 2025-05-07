@@ -34,10 +34,19 @@ if len(sys.argv) > 1:
             print(f" Failed to download image. Status code: {response.status_code}")
             exit()
 
-        logo = Image.open(BytesIO(response.content))
-        logo_size = int(qr_width * 0.2)
+        logo = Image.open(BytesIO(response.content)).convert("RGBA")
+
+        logo_size = int(qr_width * 0.19)
         logo = logo.resize((logo_size, logo_size), Image.LANCZOS)
+
+        # Step 1: Create a background box same size as logo
+        background_box = Image.new("RGB", (logo_size, logo_size), backgroundColor)
+
+        # Step 2: Paste the background box in the center
         pos = ((qr_width - logo_size) // 2, (qr_height - logo_size) // 2)
+        qr_img.paste(background_box, pos)
+
+        # Step 3: Paste logo on top (preserve transparency if any)
         qr_img.paste(logo, pos, mask=logo if logo.mode == 'RGBA' else None)
 
     output_dir = "RESULT"
