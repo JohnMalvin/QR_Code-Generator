@@ -188,6 +188,7 @@
     justify-content: center;
     padding: 10%;
     display: none;
+    background: url(../assets/TRANSPARENT.png);
 }
 .logo-here {
     width: 100%;

@@ -4,7 +4,7 @@ import GENERATE from "./assets/GENERATE.png"
 import UPLOAD from "./assets/UPLOAD.png"
 import DOWNLOAD from "./assets/DOWNLOAD.png"
 // import barcodeFill from "./assets/BarcodeFill.png"
-import barcodeLogo from "./assets/BarcodeLogo.jpg"
+import barcodeLogo from "./assets/BarcodeLogo.png"
 import ColorPicker from "./ColorPicker";
 import { useEffect, useState } from "react"
 import { hexToRgb, isValidUrl } from "./CLIENT_HELPER";
@@ -87,22 +87,26 @@ function Dashboard() {
         const button = document.querySelector("#upload-logo") as HTMLDivElement;
         const logoHR = document.querySelector(".logo-hr") as HTMLDivElement;
         const label = document.querySelector(".logo-label-text") as HTMLDivElement;
-        if (!logoCanvas || !button || !logoHR || !label) return;
+        const cutOut = document.querySelector(".barcode-cut-out") as HTMLDivElement;
+        if (!logoCanvas || !button || !logoHR || !label || !cutOut) return;
         logoCanvas.style.display = "block";
         button.style.display = "flex";
         logoHR.style.display = "block";
         label.style.opacity = "1";
+        cutOut.style.display = "block";
     }
     const hideLogoUI = () => {
         const logoCanvas = document.querySelector(".preview-logo") as HTMLDivElement;
         const button = document.querySelector("#upload-logo") as HTMLDivElement;
         const logoHR = document.querySelector(".logo-hr") as HTMLDivElement;
         const label = document.querySelector(".logo-label-text") as HTMLDivElement;
-        if (!logoCanvas || !button || !logoHR || !label) return;
+        const cutOut = document.querySelector(".barcode-cut-out") as HTMLDivElement;
+        if (!logoCanvas || !button || !logoHR || !label || !cutOut) return;
         logoCanvas.style.display = "none";
         button.style.display = "none";
         logoHR.style.display = "none";
         label.style.opacity = "0.4";
+        cutOut.style.display = "none";
     }
     const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
