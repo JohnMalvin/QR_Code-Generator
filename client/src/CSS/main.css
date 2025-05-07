@@ -72,7 +72,8 @@ body {
 .header-text-content-container p,
 .gradient-button,
 input,
-.dashboard-left
+.dashboard-left,
+.dashboard-right
 {
     pointer-events: auto;
  }
