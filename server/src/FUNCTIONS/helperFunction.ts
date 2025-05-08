@@ -40,17 +40,17 @@ export const sendDataToPython = (datas: DataToSend): Promise<any> => {
       const absoluteLogoFilePath = path.resolve(__dirname, '../uploads', datas.logoFilePath);
       if (!fs.existsSync(absoluteLogoFilePath)) {
         console.error("Logo file does not exist at:", absoluteLogoFilePath);
-        throw createHttpError(404, "Logo file not found.");
+        return reject(createHttpError(404, "Logo file not found."));
       }
       data.logoFile = absoluteLogoFilePath; // Send the file path, not the content
       console.log("✅ Logo file path added:", data.logoFile);
     }
 
-    console.log(" Data being sent to Python:", data);
+    console.log("Data being sent to Python:", data);
 
     const pythonScriptPath = path.resolve(__dirname, '../../PYTHON/QRGen.py');
     if (!fs.existsSync(pythonScriptPath)) {
-      const msg = ` QRGen.py does not exist at path: ${pythonScriptPath}`;
+      const msg = `QRGen.py does not exist at path: ${pythonScriptPath}`;
       console.error(msg);
       return reject(createHttpError(404, msg));
     }
@@ -62,33 +62,47 @@ export const sendDataToPython = (datas: DataToSend): Promise<any> => {
 
     pythonProcess.stdout.on('data', (data) => {
       const text = data.toString();
-      console.log(' Python stdout:', text);
+      console.log('Python stdout:', text); // Optional for debugging
       output += text;
     });
 
     pythonProcess.stderr.on('data', (data) => {
       const errText = data.toString();
-      console.error(' Python stderr:', errText);
+      console.error('Python stderr:', errText);
       errorOutput += errText;
     });
 
     pythonProcess.on('close', (code) => {
       if (code === 0) {
-        console.log(' Python process finished successfully');
-        resolve(output);
+        console.log('Python process finished successfully');
+
+        // Extract only the JSON part from the Python output
+        const resultMatch = (output.trim().split('\n').pop() ?? '').match(/\{.*\}/s); // Match JSON part
+
+        if (resultMatch) {
+          try {
+            const result = JSON.parse(resultMatch[0]); // Parse the JSON
+            console.log('Generated QR code saved at:', result.resultPath);
+            resolve({ resultPath: result.resultPath });
+          } catch (err) {
+            console.error('Failed to parse JSON:', err);
+            reject(new Error('Failed to parse JSON from Python output'));
+          }
+        } else {
+          const msg = 'Failed to find valid JSON in Python output';
+          console.error(msg);
+          reject(new Error(msg));
+        }
       } else {
-        const msg = ` Python process exited with code ${code}`;
+        const msg = `Python process exited with code ${code}`;
         console.error(msg);
         reject(new Error(`${msg}\nDetails:\n${errorOutput}`));
       }
     });
 
-    pythonProcess.on('error', (err) => {
-      console.error(' Failed to start Python process:', err);
-      reject(new Error(`Failed to start Python process: ${err.message}`));
-    });
   });
 };
+
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/cluster";
 

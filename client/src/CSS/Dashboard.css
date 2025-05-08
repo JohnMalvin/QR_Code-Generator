@@ -136,19 +136,24 @@
     background-color: var(--white);
     width: 20%;
     height: 20%;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .barcode-logo {
     margin-left: 15%;
-    width: 100% !important;
+    width: 100%;
 }
 .logo-label {
     line-height: 0;
     display: flex;
     align-items: center;
     gap: 5px;
+}
+.barcode-retrieve {
+    display: none;
+    width: 100%;
+    border-radius: 5px;
 }
 
 #checkbox {

@@ -8,7 +8,7 @@ import path from 'path';
 import fs from 'fs';
 
 const app = express();
-
+app.use('/RESULT', express.static(path.join(__dirname, '..', '..', 'RESULT')));
 // CORS setup
 const corsOptions = {
   origin: 'http://localhost:5173', // Your frontend URL
@@ -29,7 +29,7 @@ interface DataToSend {
   logoFile?: Buffer;
 }
 
-// Route for generating QR code
+
 app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req: Request, res: Response): Promise<void> => {
   const { API, APIKEY } = req.params;
   const { URL, backgroundColor, fillColor }: DataToSend = req.body;
@@ -70,7 +70,15 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
       logoFilePath: hardcodedLogoPath, // Use the dynamically generated logo file path
     });
 
-    res.status(200).json(result);
+    // Expecting result to have a resultPath
+    if (result && result.resultPath) {
+      res.status(200).json({
+        message: "QR code generated successfully",
+        qrCodeUrl: `http://localhost:3000${result.resultPath}`,
+      });
+    } else {
+      res.status(500).json({ error: "Failed to generate QR code" });
+    }
   } catch (error) {
     console.error("Error:", error);
     if (error instanceof createHttpError.HttpError) {
@@ -80,6 +88,8 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
     }
   }
 });
+
+
 
 
 // Example route for creating a bind (not relevant for QR code but useful for testing other APIs)

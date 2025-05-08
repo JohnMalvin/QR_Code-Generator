@@ -18,7 +18,9 @@ function Dashboard() {
     const [fillColor, setFillColor] = useState("#000");
     const [includeLogo, setIncludeLogo] = useState(false);
     const [logoFile, setLogoFile] = useState<File | null>(barcodeLogo as unknown as File);
-
+    const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
+    const [retrievedURL, setRetrievedURL] = useState("#");
+    console.log(qrCodeUrl);
     useEffect(() => {
         const fillElement = document.querySelector(".barcode-svg") as HTMLOrSVGScriptElement; // Select the SVG itself
         if (!fillElement) return
@@ -72,6 +74,22 @@ function Dashboard() {
                 }
             });
             console.log("Response from server:", response.data);
+
+            const imageUrl = response.data.qrCodeUrl.replace(/\\+/g, '/');
+            console.log("QR Code URL:", imageUrl);
+            setQrCodeUrl(imageUrl);
+
+            const barcodeFill = document.querySelector(".barcode-fill") as HTMLDivElement; 
+            const cutOut = document.querySelector(".barcode-cut-out") as HTMLDivElement;
+            const barcodeLogo = document.querySelector(".barcode-logo") as HTMLImageElement;
+            const barcodeElement = document.querySelector(".barcode-retrieve") as HTMLImageElement;
+            if (!barcodeFill || !cutOut || !barcodeElement || !barcodeLogo) return;
+            barcodeFill.style.display = "none";
+            barcodeLogo.style.display = "none";
+            cutOut.style.display = "none";
+            setRetrievedURL("http://localhost:3000/RESULT/qr_with_logo.png");
+            barcodeElement.style.display = "block";
+
         } catch (error) {
             console.error("Error sending data:", error);
         }
@@ -212,6 +230,7 @@ function Dashboard() {
                         </button>
                     </div>
                     <div className="barcode-background">
+                        <img className="barcode-retrieve" src={retrievedURL}></img>
                         {/* <img className="barcode-fill" src={barcodeFill}></img> */}
                         <div className="barcode-fill">
                             <svg className="barcode-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
