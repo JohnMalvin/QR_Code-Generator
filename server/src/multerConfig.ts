@@ -11,7 +11,9 @@ const storage = multer.diskStorage({
     cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
-    cb(null, `logoFile-${Date.now()}${path.extname(file.originalname)}`);
+    // Generate a filename with a timestamp and original file extension
+    const timestampedFileName = `logoFile-${Date.now()}${path.extname(file.originalname)}`;
+    cb(null, timestampedFileName);
   },
 });
 

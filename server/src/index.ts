@@ -40,9 +40,15 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
   console.log("backgroundColor:", backgroundColor);
   console.log("fillColor:", fillColor);
 
-  // Use a hardcoded logo path (relative to the server directory)
-  const hardcodedLogoPath = path.join(__dirname, '../uploads/logoFile-1746679088190.png');
-  console.log("Using hardcoded logo path:", hardcodedLogoPath);
+  // Get the dynamically generated filename from Multer
+  const uploadedLogoFileName = req.file?.filename;
+  if (!uploadedLogoFileName) {
+    res.status(400).json({ error: "Logo file not uploaded." });
+    return;
+  }
+
+  const hardcodedLogoPath = path.join(__dirname, '../uploads', uploadedLogoFileName);
+  console.log("Using uploaded logo path:", hardcodedLogoPath);
 
   // Validate required fields
   if (!URL || !backgroundColor || !fillColor || !API || !APIKEY) {
@@ -50,7 +56,7 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
     return;
   }
 
-  // Skip validating `logoFile` — we’re using the hardcoded logo
+  // Skip validating `logoFile` — we’re using the uploaded logo
   if (!isValidDataToSend({ URL, backgroundColor, fillColor })) {
     res.status(400).json({ error: "Invalid data format" });
     return;
@@ -61,7 +67,7 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
       URL,
       backgroundColor: JSON.parse(backgroundColor),
       fillColor: JSON.parse(fillColor),
-      logoFilePath: hardcodedLogoPath, // Use the hardcoded logo file path
+      logoFilePath: hardcodedLogoPath, // Use the dynamically generated logo file path
     });
 
     res.status(200).json(result);
@@ -74,6 +80,7 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
     }
   }
 });
+
 
 // Example route for creating a bind (not relevant for QR code but useful for testing other APIs)
 app.post("create/bind", (req: Request, res: Response) => {
