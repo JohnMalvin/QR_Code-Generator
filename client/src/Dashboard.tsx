@@ -38,13 +38,28 @@ function Dashboard() {
     }, [backgroundColor]);
 
     const submitData = () => {
+        const fileInput = document.querySelector("#real-upload") as HTMLInputElement;
+        if (!fileInput) return;
+        if (fileInput.files && fileInput.files.length > 0) {
+            setIncludeLogo(true);
+        } else {
+            setIncludeLogo(false);
+            hideLogoUI();
+            const check = document.querySelector("#checkbox") as HTMLInputElement;
+            if (!check) return;
+            check.checked = false;
+        }
+
+
         const urlInput = document.querySelector("#url-input") as HTMLInputElement;
         if (!urlInput) return;
         const url = urlInput.value;
+
         if (url === "") {
             alert("Please enter a URL");
             return;
-        }   
+        }
+
         const isValid = isValidUrl(url);
         if (!isValid) {
             alert("Please enter a valid URL");
@@ -56,6 +71,7 @@ function Dashboard() {
         formData.append("backgroundColor", JSON.stringify(hexToRgb(backgroundColor)));
         formData.append("fillColor", JSON.stringify(hexToRgb(fillColor)));
 
+        // Only append logo if it's included
         if (includeLogo && logoFile) {
             const logoFileBlob = new Blob([logoFile], { type: 'image/png' });
             formData.append("logoFile", logoFileBlob, 'logoFile.png');
@@ -87,8 +103,16 @@ function Dashboard() {
             barcodeFill.style.display = "none";
             barcodeLogo.style.display = "none";
             cutOut.style.display = "none";
-            setRetrievedURL("http://localhost:3000/RESULT/qr_with_logo.png");
+            setRetrievedURL(imageUrl);
             barcodeElement.style.display = "block";
+
+            const generateButton = document.querySelector("#generate-button") as HTMLButtonElement;
+            const downloadButton = document.querySelector("#download-button") as HTMLButtonElement;
+            if (!generateButton || !downloadButton) return;
+
+            downloadButton.style.display = "flex";
+            generateButton.style.display = "none";
+
 
         } catch (error) {
             console.error("Error sending data:", error);
@@ -176,7 +200,7 @@ function Dashboard() {
                     <div className="url-component form-component">
                         <div className="form-label logo-label">
                             <div className="checkbox">
-                                <input type="checkbox" id="checkbox" onChange={handleCheckbox}></input>
+                                <input type="checkbox" id="checkbox" onChange={handleCheckbox} defaultChecked={false}></input>
                             </div>
                             <div className="logo-label-text">With logo</div>
 
@@ -224,7 +248,20 @@ function Dashboard() {
                             <p>GENERATE</p>
                             <img src={GENERATE}></img>
                         </button>
-                        <button id="download-button" className="gradient-button">
+                        <button id="download-button" className="gradient-button"
+                            onClick={ async () => {
+                                const response = await fetch(retrievedURL);
+                                const blob = await response.blob();
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `QR-Gen[QRCODE].png`;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                            }}
+                        >
                             <p>DOWNLOAD</p>
                             <img src={DOWNLOAD}></img>
                         </button>

@@ -8,7 +8,6 @@ import path from 'path';
 import fs from 'fs';
 
 const app = express();
-app.use('/RESULT', express.static(path.join(__dirname, '..', '..', 'RESULT')));
 // CORS setup
 const corsOptions = {
   origin: 'http://localhost:5173', // Your frontend URL
@@ -16,6 +15,7 @@ const corsOptions = {
   allowedHeaders: ['Content-Type'],
 };
 app.use(cors(corsOptions));
+app.use('/RESULT', cors(corsOptions), express.static(path.join(__dirname, '..', '..', 'RESULT')));
 
 const PORT = process.env.PORT || 3000;
 connectDB();
@@ -41,10 +41,9 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
   console.log("fillColor:", fillColor);
 
   // Get the dynamically generated filename from Multer
-  const uploadedLogoFileName = req.file?.filename;
-  if (!uploadedLogoFileName) {
-    res.status(400).json({ error: "Logo file not uploaded." });
-    return;
+  let uploadedLogoFileName = "";
+  if (req.file?.filename) {
+    uploadedLogoFileName = req.file.filename;
   }
 
   const hardcodedLogoPath = path.join(__dirname, '../uploads', uploadedLogoFileName);

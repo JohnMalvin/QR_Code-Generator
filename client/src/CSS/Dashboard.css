@@ -139,9 +139,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    display: none;
 }
 .barcode-logo {
-    margin-left: 15%;
     width: 100%;
 }
 .logo-label {

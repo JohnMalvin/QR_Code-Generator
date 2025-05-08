@@ -26,7 +26,6 @@ function LandingPage() {
                 </div>
                 <div className="spacing-bottom">
                     <button
-                        id="generate-button"
                         className="gradient-button"
                         onClick={() => {
                             const dashboard = document.getElementById("dashboard");
