@@ -5,80 +5,90 @@ import mongoose from 'mongoose';
 import 'dotenv/config';
 import Bind from '../models/bind.model';
 import createHttpError from 'http-errors';
+interface ReturnBind {
+  API: string;
+  APIKEY: string;
+}
 
 interface DataToSend {
   URL: string;
   backgroundColor: number[];
   fillColor: number[];
-  logoFile?: Buffer;
-}
-interface ReturnBind {
-  API: string;
-  APIKEY: string;
+  logoFilePath?: string;
 }
 
 function arrayToString(arr: number[]): string {
   return `(${arr.join(', ')})`;
 }
 
-export const sendDataToPython = (datas: DataToSend): void => {
-  console.log("function called");
+export const sendDataToPython = (datas: DataToSend): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    console.log("🌀 sendDataToPython function called");
 
-  // Create the data object, converting arrays to strings and Buffer to base64
-  let data: { URL: string; backgroundColor: string; fillColor: string; logoFile?: string } = {
-    URL: datas.URL,
-    backgroundColor: arrayToString(datas.backgroundColor),
-    fillColor: arrayToString(datas.fillColor),
-  };
+    const data: {
+      URL: string;
+      backgroundColor: string;
+      fillColor: string;
+      logoFile?: string;
+    } = {
+      URL: datas.URL,
+      backgroundColor: arrayToString(datas.backgroundColor),
+      fillColor: arrayToString(datas.fillColor),
+    };
 
-  if (datas.logoFile) {
-    // Convert the logo file buffer to a base64 string
-    data = { ...data, logoFile: datas.logoFile.toString('base64') };
-  }
-
-  console.log("Data being sent to Python");
-
-  // Get the Python script path
-  const pythonScriptPath = path.resolve(__dirname, '../../PYTHON/QRGen.py');
-
-  // Check if the script exists
-  if (!fs.existsSync(pythonScriptPath)) {
-    console.error('Error: QRGen.py does not exist at the path:', pythonScriptPath);
-    throw createHttpError(404, "QRGen.py script not found.");
-  }
-
-  // Spawn the Python process to run the script
-  const pythonProcess = spawn('python', [pythonScriptPath, JSON.stringify(data)]);
-
-  // Listen for standard output from Python
-  pythonProcess.stdout.on('data', (data: Buffer) => {
-    console.log(`Python says: ${data.toString()}`);
-  });
-
-  // Listen for error output from Python
-  pythonProcess.stderr.on('data', (data: Buffer) => {
-    console.error(`Error: ${data.toString()}`);
-    throw new Error(`Python process error: ${data.toString()}`);
-  });
-
-  // Listen for the process close event
-  pythonProcess.on('close', (code) => {
-    if (code !== 0) {
-      console.error(`Python process exited with code ${code}`);
-      throw new Error(`Python process exited with non-zero code: ${code}`);
-    } else {
-      console.log('Python process finished successfully');
+    if (datas.logoFilePath) {
+      const absoluteLogoFilePath = path.resolve(__dirname, '../uploads', datas.logoFilePath);
+      if (!fs.existsSync(absoluteLogoFilePath)) {
+        console.error("Logo file does not exist at:", absoluteLogoFilePath);
+        throw createHttpError(404, "Logo file not found.");
+      }
+      data.logoFile = absoluteLogoFilePath; // Send the file path, not the content
+      console.log("✅ Logo file path added:", data.logoFile);
     }
-  });
 
-  // Handle errors starting the Python process
-  pythonProcess.on('error', (err) => {
-    console.error(`Failed to start Python process: ${err.message}`);
-    throw new Error(`Failed to start Python process: ${err.message}`);
+    console.log(" Data being sent to Python:", data);
+
+    const pythonScriptPath = path.resolve(__dirname, '../../PYTHON/QRGen.py');
+    if (!fs.existsSync(pythonScriptPath)) {
+      const msg = ` QRGen.py does not exist at path: ${pythonScriptPath}`;
+      console.error(msg);
+      return reject(createHttpError(404, msg));
+    }
+
+    const pythonProcess = spawn('python', [pythonScriptPath, JSON.stringify(data)]);
+
+    let output = '';
+    let errorOutput = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+      const text = data.toString();
+      console.log(' Python stdout:', text);
+      output += text;
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      const errText = data.toString();
+      console.error(' Python stderr:', errText);
+      errorOutput += errText;
+    });
+
+    pythonProcess.on('close', (code) => {
+      if (code === 0) {
+        console.log(' Python process finished successfully');
+        resolve(output);
+      } else {
+        const msg = ` Python process exited with code ${code}`;
+        console.error(msg);
+        reject(new Error(`${msg}\nDetails:\n${errorOutput}`));
+      }
+    });
+
+    pythonProcess.on('error', (err) => {
+      console.error(' Failed to start Python process:', err);
+      reject(new Error(`Failed to start Python process: ${err.message}`));
+    });
   });
 };
-
-
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/cluster";
 

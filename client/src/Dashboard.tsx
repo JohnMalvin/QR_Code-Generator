@@ -55,7 +55,8 @@ function Dashboard() {
         formData.append("fillColor", JSON.stringify(hexToRgb(fillColor)));
 
         if (includeLogo && logoFile) {
-            formData.append("logoFile", logoFile);
+            const logoFileBlob = new Blob([logoFile], { type: 'image/png' });
+            formData.append("logoFile", logoFileBlob, 'logoFile.png');
         }
 
         console.log("Data to send:", formData);
