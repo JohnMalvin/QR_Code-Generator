@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
-import { apiValidator, connectDB, handleCreateNewBind, isValidDataToSend, sendDataToPython } from './FUNCTIONS/helperFunction';
+import { apiValidator, connectDB, handleCreateNewBind, isValidDataToSend, sendDataToPython } from './src/FUNCTIONS/helperFunction';
 import createHttpError from 'http-errors';
 import 'dotenv/config';
 import cors from "cors";
-import upload from './multerConfig';
+import upload from './src/multerConfig';
 import path from 'path';
 import dotenv from "dotenv";
 

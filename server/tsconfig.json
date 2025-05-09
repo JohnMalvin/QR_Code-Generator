@@ -13,6 +13,6 @@
     "noEmit": true,
     "types": ["jest"]
   },
-  "include": ["src/**/*", "test/**/*"],
+  "include": ["src/**/*", "test/**/*", "index.ts"],
   "exclude": ["node_modules", "dist"]
 }
