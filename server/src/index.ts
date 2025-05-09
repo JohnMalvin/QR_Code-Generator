@@ -8,12 +8,12 @@ import path from 'path';
 import dotenv from "dotenv";
 
 dotenv.config();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.SERVER_PORT;
 
 const app = express();
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL,
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
 };
@@ -31,6 +31,8 @@ interface DataToSend {
   logoFile?: Buffer;
 }
 
+const SERVER_URL = process.env.SERVER_URL;
+console.log("SERVER_URL:", SERVER_URL);
 
 app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req: Request, res: Response): Promise<void> => {
   const { API, APIKEY } = req.params;
@@ -75,7 +77,7 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
     if (result && result.resultPath) {
       res.status(200).json({
         message: "QR code generated successfully",
-        qrCodeUrl: `${"http://localhost:3000"}${result.resultPath}`,
+        qrCodeUrl: `${SERVER_URL}${result.resultPath}`,
       });
     } else {
       res.status(500).json({ error: "Failed to generate QR code" });

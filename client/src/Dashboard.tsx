@@ -11,8 +11,8 @@ import axios from "axios";
 function Dashboard() {
     const API = "API";
     const APIKEY = "YOUR_API_KEY_HERE";
-    // const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-    const SERVER_URL = "http://localhost:3000"
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+    // const SERVER_URL = "http://localhost:3000"
     const [backgroundColor, setBackgroundColor] = useState("#fff");
     const [fillColor, setFillColor] = useState("#000");
     const [includeLogo, setIncludeLogo] = useState(false);

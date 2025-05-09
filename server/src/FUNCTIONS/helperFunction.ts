@@ -103,13 +103,14 @@ export const sendDataToPython = (datas: DataToSend): Promise<any> => {
   });
 };
 
-
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/cluster";
+const MONGO_URI = process.env.MONGO_URI;
 
 export const connectDB = async () => {
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(String(MONGO_URI));
+    console.log('🔵 MongoDB connection string:', MONGO_URI);
     console.log('🟢 MongoDB connected');
+
   } catch (err: any) {
     console.error('🔴 MongoDB connection error:', err.message);
     console.error(err.stack);
