@@ -11,7 +11,8 @@ import axios from "axios";
 function Dashboard() {
     const API = "API";
     const APIKEY = "YOUR_API_KEY_HERE";
-    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+    // const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+    const SERVER_URL = "http://localhost:3000"
     const [backgroundColor, setBackgroundColor] = useState("#fff");
     const [fillColor, setFillColor] = useState("#000");
     const [includeLogo, setIncludeLogo] = useState(false);
@@ -185,7 +186,7 @@ function Dashboard() {
         button.style.display = "flex";
         logoHR.style.display = "block";
         label.style.opacity = "1";
-        cutOut.style.display = "block";
+        cutOut.style.display = "flex";
     }
     const hideLogoUI = () => {
         const logoCanvas = document.querySelector(".preview-logo") as HTMLDivElement;
@@ -208,6 +209,9 @@ function Dashboard() {
             hideLogoUI();
             setIncludeLogo(false);
         }
+        if (isCompleted) {
+            location.reload();
+        }
         const overflow = document.querySelector(".dashboard-left") as HTMLDivElement;
         if (!overflow) return;
         overflow.scrollTo({ top: overflow.scrollHeight, behavior: 'smooth' });
@@ -221,17 +225,17 @@ function Dashboard() {
                         <input id="url-input" type="text" autoComplete="off" placeholder="htpps://www.example.com"></input>
                     </div>
                     <div className="form-hr"></div>
-                    <div className="background-component form-component">
-                        <label className="form-label">Background Color :</label>
-                        <ColorPicker
-                           color={backgroundColor} onColorChange={handleBackgroundColorChange}
-                        />
-                    </div>
-                    <div className="form-hr"></div>
                     <div className="fill-component form-component">
                         <label className="form-label">Fill Color :</label>
                         <ColorPicker
                             color={fillColor} onColorChange={handleFillColorChange}
+                        />
+                    </div>
+                    <div className="form-hr"></div>
+                    <div className="background-component form-component">
+                        <label className="form-label">Background Color :</label>
+                        <ColorPicker
+                           color={backgroundColor} onColorChange={handleBackgroundColorChange}
                         />
                     </div>
                     <div className="url-component form-component">

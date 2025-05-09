@@ -75,7 +75,7 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
     if (result && result.resultPath) {
       res.status(200).json({
         message: "QR code generated successfully",
-        qrCodeUrl: `${process.env.BASE_URL}${result.resultPath}`,
+        qrCodeUrl: `${"http://localhost:3000"}${result.resultPath}`,
       });
     } else {
       res.status(500).json({ error: "Failed to generate QR code" });

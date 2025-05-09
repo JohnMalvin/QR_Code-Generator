@@ -7,15 +7,8 @@
     margin-top: 10px;
     width: 90% !important;
 }
-#rc-editable-input-18, 
-#rc-editable-input-16, 
-#rc-editable-input-14, 
-#rc-editable-input-12, 
-#rc-editable-input-10, 
-#rc-editable-input-8, 
-#rc-editable-input-6, 
-#rc-editable-input-4, 
-#rc-editable-input-2 
+
+.flexbox-fix input
 {
     all: unset;
     background-color: rgba(255, 255, 255, 0.4) !important;
