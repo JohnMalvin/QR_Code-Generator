@@ -59,7 +59,8 @@ if logo_file_path:
     except Exception:
         pass
     finally:
-        if logo_file_path and os.path.exists(logo_file_path):
+        if logo_file_path and os.path.exists(logo_file_path) and str(logo_file_path) != r"C:\CODES\GITHUB\QR_Code-Generator\server\uploads":
+            print("===============", str(logo_file_path))
             os.remove(logo_file_path)
 
 script_dir = os.path.dirname(os.path.abspath(__file__))

@@ -1,9 +1,7 @@
 import "./CSS/Dashboard.css"
-// import icon from "./assets/react.svg"
 import GENERATE from "./assets/GENERATE.png"
 import UPLOAD from "./assets/UPLOAD.png"
 import DOWNLOAD from "./assets/DOWNLOAD.png"
-// import barcodeFill from "./assets/BarcodeFill.png"
 import barcodeLogo from "./assets/BarcodeLogo.png"
 import ColorPicker from "./ColorPicker";
 import { useEffect, useState } from "react"
@@ -13,28 +11,74 @@ import axios from "axios";
 function Dashboard() {
     const API = "API";
     const APIKEY = "YOUR_API_KEY_HERE";
-    const SERVER_URL = "http://localhost:3000"
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const [backgroundColor, setBackgroundColor] = useState("#fff");
     const [fillColor, setFillColor] = useState("#000");
     const [includeLogo, setIncludeLogo] = useState(false);
     const [logoFile, setLogoFile] = useState<File | null>(barcodeLogo as unknown as File);
-    const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
     const [retrievedURL, setRetrievedURL] = useState("#");
-    console.log(qrCodeUrl);
+    const [isCompleted, setIsCompleted] = useState<boolean>(false)
     useEffect(() => {
+        if (isCompleted) {
+            const barcodeFill = document.querySelector(".barcode-fill") as HTMLDivElement; 
+            const cutOut = document.querySelector(".barcode-cut-out") as HTMLDivElement;
+            const barcodeLogo = document.querySelector(".barcode-logo") as HTMLImageElement;
+            const barcodeElement = document.querySelector(".barcode-retrieve") as HTMLImageElement;
+            if (!barcodeFill || !cutOut || !barcodeElement || !barcodeLogo) return;
+            barcodeFill.style.display = "flex";
+            barcodeLogo.style.display = "block";
+            cutOut.style.display = "flex";
+            barcodeElement.style.display = "none";
+            setIsCompleted(false);
+            if (includeLogo) {
+                showLogoUI();
+                const check = document.querySelector("#checkbox") as HTMLInputElement;
+                if (!check) return;
+                check.checked = true;
+                const generateButton = document.querySelector("#generate-button") as HTMLButtonElement;
+                const downloadButton = document.querySelector("#download-button") as HTMLButtonElement;
+                if (!generateButton || !downloadButton) return;
+
+                downloadButton.style.display = "none";
+                generateButton.style.display = "flex";
+            }
+        }
+        
         const fillElement = document.querySelector(".barcode-svg") as HTMLOrSVGScriptElement; // Select the SVG itself
         if (!fillElement) return
         fillElement.style.fill = fillColor;
-        console.log("Fill color changed:", fillColor);
     }, [fillColor]);
-
+    
     useEffect(() => {
+        if (isCompleted) {
+            const barcodeFill = document.querySelector(".barcode-fill") as HTMLDivElement; 
+            const cutOut = document.querySelector(".barcode-cut-out") as HTMLDivElement;
+            const barcodeLogo = document.querySelector(".barcode-logo") as HTMLImageElement;
+            const barcodeElement = document.querySelector(".barcode-retrieve") as HTMLImageElement;
+            if (!barcodeFill || !cutOut || !barcodeElement || !barcodeLogo) return;
+            barcodeFill.style.display = "flex";
+            barcodeLogo.style.display = "block";
+            cutOut.style.display = "flex";
+            barcodeElement.style.display = "none";
+            setIsCompleted(false);
+            if (includeLogo) {
+                showLogoUI();
+                const check = document.querySelector("#checkbox") as HTMLInputElement;
+                if (!check) return;
+                check.checked = true;
+                const generateButton = document.querySelector("#generate-button") as HTMLButtonElement;
+                const downloadButton = document.querySelector("#download-button") as HTMLButtonElement;
+                if (!generateButton || !downloadButton) return;
+
+                downloadButton.style.display = "none";
+                generateButton.style.display = "flex";
+            }
+        }
         const backElement = document.querySelector(".barcode-background") as HTMLDivElement; // Select the SVG itself
         const backLogoElement = document.querySelector(".barcode-cut-out") as HTMLDivElement; // Select the SVG itself
         if (!backElement || !backLogoElement) return;
         backElement.style.backgroundColor = backgroundColor;
         backLogoElement.style.backgroundColor = backgroundColor;
-        console.log("Background color changed:", backgroundColor);
     }, [backgroundColor]);
 
     const submitData = () => {
@@ -77,7 +121,6 @@ function Dashboard() {
             formData.append("logoFile", logoFileBlob, 'logoFile.png');
         }
 
-        console.log("Data to send:", formData);
         sendData(formData);
     }
 
@@ -89,11 +132,8 @@ function Dashboard() {
                     'Content-Type': 'multipart/form-data',
                 }
             });
-            console.log("Response from server:", response.data);
 
             const imageUrl = response.data.qrCodeUrl.replace(/\\+/g, '/');
-            console.log("QR Code URL:", imageUrl);
-            setQrCodeUrl(imageUrl);
 
             const barcodeFill = document.querySelector(".barcode-fill") as HTMLDivElement; 
             const cutOut = document.querySelector(".barcode-cut-out") as HTMLDivElement;
@@ -113,15 +153,12 @@ function Dashboard() {
             downloadButton.style.display = "flex";
             generateButton.style.display = "none";
 
+            setIsCompleted(true);
 
         } catch (error) {
             console.error("Error sending data:", error);
         }
     };
-    useEffect(() => { 
-        console.log("Background color:", backgroundColor);
-        console.log("Fill color:", fillColor);
-    }, [fillColor, backgroundColor]);
 
     const handleBackgroundColorChange = (newColor: string) => {
         setBackgroundColor(newColor);
@@ -260,6 +297,7 @@ function Dashboard() {
                                 a.click();
                                 document.body.removeChild(a);
                                 URL.revokeObjectURL(url);
+                                location.reload();
                             }}
                         >
                             <p>DOWNLOAD</p>

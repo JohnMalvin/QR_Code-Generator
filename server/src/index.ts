@@ -5,19 +5,21 @@ import 'dotenv/config';
 import cors from "cors";
 import upload from './multerConfig';
 import path from 'path';
-import fs from 'fs';
+import dotenv from "dotenv";
+
+dotenv.config();
+const PORT = process.env.PORT || 3000;
 
 const app = express();
-// CORS setup
+
 const corsOptions = {
-  origin: 'http://localhost:5173', // Your frontend URL
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
 };
 app.use(cors(corsOptions));
 app.use('/RESULT', cors(corsOptions), express.static(path.join(__dirname, '..', '..', 'RESULT')));
 
-const PORT = process.env.PORT || 3000;
 connectDB();
 
 app.use(express.json());
@@ -73,7 +75,7 @@ app.post('/generate/QRCode/:API/:APIKEY', upload.single('logoFile'), async (req:
     if (result && result.resultPath) {
       res.status(200).json({
         message: "QR code generated successfully",
-        qrCodeUrl: `http://localhost:3000${result.resultPath}`,
+        qrCodeUrl: `${process.env.BASE_URL}${result.resultPath}`,
       });
     } else {
       res.status(500).json({ error: "Failed to generate QR code" });
