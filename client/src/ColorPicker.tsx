@@ -24,7 +24,6 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ color, onColorChange }) => {
         presetColors={[]}
         // width="300px"
       />
-      <p>Selected color: {selectedColor}</p>
     </div>
   );
 };
