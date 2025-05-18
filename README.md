@@ -23,7 +23,7 @@ View the full design inspiration or wireframe 👉 *[Add Figma or image link her
 ## ⚙️ Tech Stack
 
 - **Frontend**: React (TypeScript) + Vite
-- **Backend**: TypeScript + Python
+- **Backend**: TypeScript (Express) + Python
 - **Styling**: CSS
 - **Deployment**: Vercel
 
